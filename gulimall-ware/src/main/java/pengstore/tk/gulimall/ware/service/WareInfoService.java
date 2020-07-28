@@ -1,0 +1,20 @@
+package pengstore.tk.gulimall.ware.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import pengstore.tk.common.utils.PageUtils;
+import pengstore.tk.gulimall.ware.entity.WareInfoEntity;
+
+import java.util.Map;
+
+/**
+ * 仓库信息
+ *
+ * @author jiapeng
+ * @email jiape123456@gmail.com
+ * @date 2020-07-28 13:55:27
+ */
+public interface WareInfoService extends IService<WareInfoEntity> {
+
+    PageUtils queryPage(Map<String, Object> params);
+}
+
