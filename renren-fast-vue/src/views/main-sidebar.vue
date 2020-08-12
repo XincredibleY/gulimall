@@ -37,8 +37,8 @@
 
 <script>
   import SubMenu from './main-sidebar-sub-menu'
-  import { isURL } from '@/utils/validate'
-  export default {
+import { isURL } from '@/utils/validate'
+export default {
     data () {
       return {
         dynamicMenuRoutes: []

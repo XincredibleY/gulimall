@@ -75,7 +75,7 @@
 
 <script>
   import AddOrUpdate from './config-add-or-update'
-  export default {
+export default {
     data () {
       return {
         dataForm: {

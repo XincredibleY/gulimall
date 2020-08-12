@@ -1,6 +1,7 @@
 package pengstore.tk.gulimall.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -32,14 +33,15 @@ public class CategoryController {
     private CategoryService categoryService;
 
     /**
-     * 列表
+     * 列表，显示所有商品的三级分类，并组装成树形图
      */
-    @RequestMapping("/list")
+    @RequestMapping("/list/tree")
     //@RequiresPermissions("product:category:list")
-    public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = categoryService.queryPage(params);
-
-        return R.ok().put("page", page);
+    public R list(){
+        // 查询所有分类
+        List<CategoryEntity> list = categoryService.listWithTree();
+        //以树形结构组装分类
+        return R.ok().put("data",list);
     }
 
 
@@ -61,7 +63,6 @@ public class CategoryController {
     //@RequiresPermissions("product:category:save")
     public R save(@RequestBody CategoryEntity category){
 		categoryService.save(category);
-
         return R.ok();
     }
 
@@ -77,12 +78,29 @@ public class CategoryController {
     }
 
     /**
+     * 对应前端拖拽功能的批量修改
+     */
+    @RequestMapping("/update/sort")
+    //@RequiresPermissions("product:category:update")
+    public R updateSort(@RequestBody CategoryEntity[] category){
+        categoryService.updateBatchById(Arrays.asList(category));
+
+        return R.ok();
+    }
+
+    /**
      * 删除
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("product:category:delete")
     public R delete(@RequestBody Long[] catIds){
-		categoryService.removeByIds(Arrays.asList(catIds));
+
+        // 1. 查看删除的有没有外键依赖
+
+        // categoryService.removeByIds(Arrays.asList(catIds));
+
+        // 2. 逻辑删除
+        categoryService.removeMenuByIds(Arrays.asList(catIds));
 
         return R.ok();
     }

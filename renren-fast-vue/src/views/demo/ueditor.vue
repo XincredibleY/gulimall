@@ -28,7 +28,7 @@
 
 <script>
   import ueditor from 'ueditor'
-  export default {
+export default {
     data () {
       return {
         ue: null,

@@ -44,7 +44,7 @@
 
 <script>
   import { isURL } from '@/utils/validate'
-  export default {
+export default {
     inject: ['refresh'],
     data () {
       return {

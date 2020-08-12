@@ -36,7 +36,7 @@
 
 <script>
   import echarts from 'echarts'
-  export default {
+export default {
     data () {
       return {
         chartLine: null,

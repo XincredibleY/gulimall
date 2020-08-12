@@ -30,7 +30,7 @@
 
 <script>
   import { treeDataTranslate } from '@/utils'
-  export default {
+export default {
     data () {
       return {
         visible: false,

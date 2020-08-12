@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pengstore.tk.gulimall.member.entity.MemberEntity;
+import pengstore.tk.gulimall.member.feign.CouponFeignService;
 import pengstore.tk.gulimall.member.service.MemberService;
 import pengstore.tk.common.utils.PageUtils;
 import pengstore.tk.common.utils.R;
@@ -30,6 +31,20 @@ import pengstore.tk.common.utils.R;
 public class MemberController {
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    CouponFeignService couponFeignService;
+
+    /**
+     * 测试远程调用couponmembers服务
+     */
+    @RequestMapping("/coupons")
+    public R test(){
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setNickname("鹏神");
+        R membercoupons = couponFeignService.membercoupons();
+        return R.ok().put("Member",memberEntity).put("优惠券",membercoupons.get("优惠券"));
+    }
 
     /**
      * 列表

@@ -38,7 +38,7 @@
 
 <script>
   import { getUUID } from '@/utils'
-  export default {
+export default {
     data () {
       return {
         dataForm: {

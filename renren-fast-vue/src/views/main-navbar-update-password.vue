@@ -26,7 +26,7 @@
 
 <script>
   import { clearLoginInfo } from '@/utils'
-  export default {
+export default {
     data () {
       var validateConfirmPassword = (rule, value, callback) => {
         if (this.dataForm.newPassword !== value) {

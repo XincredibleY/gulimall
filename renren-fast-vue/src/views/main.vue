@@ -16,9 +16,9 @@
 
 <script>
   import MainNavbar from './main-navbar'
-  import MainSidebar from './main-sidebar'
-  import MainContent from './main-content'
-  export default {
+import MainSidebar from './main-sidebar'
+import MainContent from './main-content'
+export default {
     provide () {
       return {
         // 刷新
