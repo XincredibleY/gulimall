@@ -1,5 +1,10 @@
 <template>
   <div>
+    <span>
+      <el-switch l-switch v-model="draggable" active-text="开启拖拽" inactive-text="关闭拖拽"></el-switch>
+      <el-button type="danger" class="batchsaveBtn" size="small" @click="batchDelete()">批量删除</el-button>
+      <el-button v-if="draggable" class="batchsaveBtn" size="small" @click="batchSave()">批量保存</el-button>
+    </span>
     <el-tree
       :data="menu"
       :props="defaultProps"
@@ -7,7 +12,8 @@
       node-key="catId"
       :default-expanded-keys="expandcatId"
       :expand-on-click-node="false"
-      draggable
+      ref="menuTree"
+      :draggable="draggable"
       :allow-drop="allowDrop"
       @node-drop="handleDrop"
     >
@@ -29,13 +35,13 @@
     <el-dialog :title="title" :visible.sync="dialogFormVisible">
       <el-form :model="category">
         <el-form-item label="分类名称" :label-width="formLabelWidth">
-          <el-input v-model="category.name" autocomplete="off"></el-input>  
+          <el-input v-model="category.name" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="图标" :label-width="formLabelWidth">
-          <el-input v-model="category.icon" autocomplete="off"></el-input>  
+          <el-input v-model="category.icon" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="货品单位" :label-width="formLabelWidth">
-          <el-input v-model="category.productUnit" autocomplete="off"></el-input>  
+          <el-input v-model="category.productUnit" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -79,7 +85,8 @@ export default {
       formLabelWidth: '100px',
       maxLevel: 0,
       pCid: [],
-      updateNodes: []
+      updateNodes: [],
+      draggable: true
     }
   },
   // 计算属性 类似于data概念
@@ -143,7 +150,7 @@ export default {
     },
     remove (node, data) {
       var ids = [data.catId];
-      this.$confirm(`删除分类【${data.name}】?`, '提示', {
+      this.$confirm(`确定删除分类【${data.name}】?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -268,21 +275,6 @@ export default {
           });
         }
       }
-
-      this.$http({
-        url: this.$http.adornUrl('/product/category/update/sort'),
-        method: 'post',
-        data: this.$http.adornData(this.updateNodes, false)
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '拖拽数据保存成功'
-        });
-      });
-      this.getMenu();
-      this.expandcatId = this.pCid;
-      this.pCid = [];
-      this.updateNodes = [];
     },
     // 改变节点树所有节点的lvl
     changeNodesLvl (node) {
@@ -295,11 +287,59 @@ export default {
           this.changeNodesLvl(node.childNodes[i]);
         }
       }
+    },
+    batchSave () {
+      this.$http({
+        url: this.$http.adornUrl('/product/category/update/sort'),
+        method: 'post',
+        data: this.$http.adornData(this.updateNodes, false)
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '拖拽数据保存成功'
+        });
+      });
+
+      this.expandcatId = this.pCid;
+      this.getMenu();
+      this.pCid = [];
+      this.updateNodes = [];
+    },
+    batchDelete () {
+      let selectedNodes = this.$refs.menuTree.getCheckedNodes();
+      let catId = [];
+      let catName = [];
+      for (let i = 0; i < selectedNodes.size; i++) {
+        catId.push(selectedNodes[i].catId);
+        catName.push(selectedNodes[i].name);
+      }
+      this.$confirm(`确定批量删除分类【${catName}】?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl('/product/category/delete'),
+          method: 'post',
+          data: this.$http.adornData(catId, false)
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getMenu();
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '删除取消!'
+        });
+      });
     }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
   created () {
-    this.getMenu()
+    this.getMenu();
   },
   // 生命周期 - 挂载完成（可以访问DOM元素）
   mounted () {},
@@ -313,4 +353,8 @@ export default {
 }
 </script>
 <style scoped>
+.batchsaveBtn {
+  margin-left: 30px;
+  margin-bottom: 10px;
+}
 </style>

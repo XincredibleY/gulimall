@@ -41,9 +41,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 map(menu -> {
                     menu.setChildren(getChildrens(menu,categoryEntities));
                     return menu;
-                }).
-                sorted(Comparator.comparingInt(CategoryEntity::getSort)).
-                collect(Collectors.toList());
+                }).sorted((menu1, menu2)-> {
+                    return (menu1.getSort() == null ? 0 : menu1.getSort()) - (menu2.getSort() == null ? 0 : menu2.getSort());
+                }).collect(Collectors.toList());
         // 找到所有一级分类
         return level1Menus;
     }
@@ -63,9 +63,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 map(menu -> {
                     menu.setChildren(getChildrens(menu,all));
                     return menu;
-                }).
-                sorted(Comparator.comparingInt(CategoryEntity::getSort)).
-                collect(Collectors.toList());
+                }).sorted((menu1, menu2) -> {
+                    return (menu1.getSort()==null?0:menu1.getSort()) - (menu2.getSort()==null?0:menu2.getSort());
+                }).collect(Collectors.toList());    // sorted(Comparator.comparingInt(CategoryEntity::getSort)).
         return childrenEntities;
     }
 
